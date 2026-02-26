@@ -6,7 +6,7 @@ import vueDevTools from 'vite-plugin-vue-devtools'
 import tailwindcss from '@tailwindcss/vite'
 
 export default defineConfig({
-  base: '/seat',
+  base: '/seat/',
   plugins: [vue(), vueDevTools(), tailwindcss()],
   resolve: {
     alias: {
