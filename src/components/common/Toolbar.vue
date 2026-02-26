@@ -333,6 +333,14 @@ function handleSchemeChanged(id: string) {
   border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
 }
 
+.toolbar :deep(.el-dropdown .el-button:focus) {
+  outline: none;
+}
+
+.toolbar :deep(.el-button:focus) {
+  outline: none;
+}
+
 .toolbar :deep(.el-dropdown-menu__item.is-active) {
   background-color: var(--primary-bg);
   color: var(--primary-color);
