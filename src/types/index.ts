@@ -1,0 +1,5 @@
+export * from './student'
+export * from './seat'
+export * from './config'
+export * from './group'
+export * from './scheme'

@@ -1,0 +1,5 @@
+export { useStudentStore } from './student'
+export { useSeatStore } from './seat'
+export { useConfigStore } from './config'
+export { useGroupStore } from './group'
+export { useSchemeStore } from './scheme'
