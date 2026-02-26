@@ -14,7 +14,7 @@ const breakpoints = {
   md: 768,
   lg: 992,
   xl: 1200,
-  xxl: 1400,
+  xxl: 1400
 }
 
 function checkScreenSize(): ResponsiveState {
@@ -27,7 +27,7 @@ function checkScreenSize(): ResponsiveState {
     isDesktop: width >= breakpoints.lg,
     screenWidth: width,
     screenHeight: height,
-    isTouch: 'ontouchstart' in window || navigator.maxTouchPoints > 0,
+    isTouch: 'ontouchstart' in window || navigator.maxTouchPoints > 0
   }
 }
 

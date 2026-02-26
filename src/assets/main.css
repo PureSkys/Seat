@@ -160,6 +160,17 @@ body,
   transform: translateY(-2px);
 }
 
+.el-dropdown-menu {
+  max-height: min(320px, 40vh);
+  overflow-y: auto;
+}
+
+.el-dropdown-menu .el-dropdown-menu__item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;

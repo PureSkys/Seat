@@ -41,7 +41,11 @@
     <span></span>
     <template #dropdown>
       <el-dropdown-menu>
-        <el-dropdown-item command="">默认颜色</el-dropdown-item>
+        <el-dropdown-item command="">
+          <span class="color-option"
+            :style="{ background: 'var(--bg-secondary)', border: '1px solid var(--border-color)' }"></span>
+          默认颜色
+        </el-dropdown-item>
         <el-dropdown-item v-for="color in studentColors" :key="color" :command="color">
           <span class="color-option" :style="{ background: color }"></span>
           {{ color }}
@@ -55,7 +59,7 @@
 import { ref, computed, nextTick } from 'vue'
 import { Lock } from '@element-plus/icons-vue'
 import type { Seat, Student } from '@/types'
-import { useDragDrop, isTouchDevice } from '@/composables'
+import { useDragDrop, isTouchDevice, useContextMenu } from '@/composables'
 import { useStudentStore } from '@/stores/student'
 import { useSeatStore } from '@/stores/seat'
 import { useConfigStore } from '@/stores/config'
@@ -89,6 +93,8 @@ const {
   dragOverSeatId,
   isDragging
 } = useDragDrop()
+
+const { openMenu } = useContextMenu()
 
 const colorDropdownRef = ref()
 const contextMenuStudentId = ref<string | null>(null)
@@ -151,6 +157,7 @@ function handleContextMenu() {
     nextTick(() => {
       const dropdown = colorDropdownRef.value
       if (dropdown) {
+        openMenu(dropdown)
         dropdown.handleOpen()
       }
     })

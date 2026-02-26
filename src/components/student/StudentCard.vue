@@ -45,7 +45,7 @@ import { ref, computed, nextTick } from 'vue'
 import { Edit, Delete } from '@element-plus/icons-vue'
 import type { Student } from '@/types'
 import { STUDENT_COLORS } from '@/types'
-import { useDragDrop } from '@/composables'
+import { useDragDrop, useContextMenu } from '@/composables'
 import { useStudentStore } from '@/stores/student'
 import { useSeatStore } from '@/stores/seat'
 import { useConfigStore } from '@/stores/config'
@@ -67,6 +67,8 @@ const groupStore = useGroupStore()
 const studentColors = STUDENT_COLORS
 
 const { handleDragStart: dragStart, handleDragEnd: dragEnd } = useDragDrop()
+
+const { openMenu } = useContextMenu()
 
 const contextMenuRef = ref()
 const isTouching = ref(false)
@@ -99,6 +101,7 @@ function handleContextMenu() {
   nextTick(() => {
     const dropdown = contextMenuRef.value
     if (dropdown) {
+      openMenu(dropdown)
       dropdown.handleOpen()
     }
   })
