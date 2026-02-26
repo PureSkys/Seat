@@ -1,4 +1,4 @@
-master:
+main:
   push:
     - name: Sync GitStore
       stages:
