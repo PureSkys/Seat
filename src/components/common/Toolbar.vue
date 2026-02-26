@@ -6,14 +6,14 @@
           <el-icon>
             <Refresh />
           </el-icon>
-          随机排座
+          <span class="btn-text">随机排座</span>
         </el-button>
         <el-dropdown @command="handleSmartArrange">
           <el-button type="primary">
             <el-icon>
               <MagicStick />
             </el-icon>
-            智能排座
+            <span class="btn-text">智能排座</span>
             <el-icon class="el-icon--right">
               <ArrowDown />
             </el-icon>
@@ -34,7 +34,7 @@
         <el-icon>
           <RefreshRight />
         </el-icon>
-        重置
+        <span class="btn-text">重置</span>
       </el-button>
     </div>
 
@@ -43,14 +43,14 @@
         <el-icon>
           <Setting />
         </el-icon>
-        座位设置
+        <span class="btn-text">座位设置</span>
       </el-button>
 
       <el-button type="success" @click="$emit('export')">
         <el-icon>
           <Download />
         </el-icon>
-        导出
+        <span class="btn-text">导出</span>
       </el-button>
 
       <SchemeSwitcher @scheme-changed="handleSchemeChanged" />
@@ -165,6 +165,10 @@ function handleSchemeChanged(id: string) {
   justify-content: flex-end;
 }
 
+.btn-text {
+  display: inline;
+}
+
 @media (max-width: 1200px) {
   .toolbar {
     flex-wrap: wrap;
@@ -178,7 +182,7 @@ function handleSchemeChanged(id: string) {
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 991px) {
   .toolbar {
     gap: 8px;
   }
@@ -189,8 +193,32 @@ function handleSchemeChanged(id: string) {
   }
 
   .toolbar :deep(.el-button) {
-    padding: 6px 10px;
+    padding: 6px 12px;
     font-size: 12px;
+  }
+}
+
+@media (max-width: 767px) {
+  .toolbar {
+    gap: 6px;
+  }
+
+  .toolbar-left,
+  .toolbar-right {
+    gap: 4px;
+  }
+
+  .toolbar :deep(.el-button) {
+    padding: 5px 10px;
+    font-size: 11px;
+  }
+
+  .btn-text {
+    display: none;
+  }
+
+  .toolbar :deep(.el-button .el-icon) {
+    margin-right: 0;
   }
 }
 
@@ -204,6 +232,7 @@ function handleSchemeChanged(id: string) {
   border: 1px solid transparent;
   position: relative;
   overflow: hidden;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .toolbar :deep(.el-button::after) {
@@ -345,5 +374,17 @@ function handleSchemeChanged(id: string) {
   background-color: var(--primary-bg);
   color: var(--primary-color);
   font-weight: 600;
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .toolbar :deep(.el-button:hover) {
+    transform: none;
+  }
+
+  .toolbar :deep(.el-button--primary:hover),
+  .toolbar :deep(.el-button--success:hover),
+  .toolbar :deep(.el-button--warning:hover) {
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3), 0 1px 2px rgba(0, 0, 0, 0.05);
+  }
 }
 </style>

@@ -3,17 +3,18 @@
     'is-occupied': !!student,
     'is-locked': seat.isLocked,
     'is-drag-over': isDragOver,
-    'is-dragging': isDragging
+    'is-dragging': isDragging,
+    'is-touching': isTouching
   }" :style="cellStyle" :draggable="!!student && !seat.isLocked" @dragstart="handleDragStart" @dragend="handleDragEnd"
     @dragover="handleDragOver" @dragleave="handleDragLeave" @drop="handleDrop" @click="handleClick"
-    @contextmenu.prevent="handleContextMenu">
+    @contextmenu.prevent="handleContextMenu" @touchstart="handleTouchStart" @touchend="handleTouchEnd">
     <div v-if="seat.isLocked" class="lock-icon">
       <el-icon>
         <Lock />
       </el-icon>
     </div>
     <template v-else-if="student">
-      <el-tooltip placement="top" :show-after="500" :disabled="isDragging">
+      <el-tooltip placement="top" :show-after="500" :disabled="isDragging || isTouchDevice">
         <template #content>
           <div class="student-tooltip">
             <div><strong>{{ student.name }}</strong></div>
@@ -54,7 +55,7 @@
 import { ref, computed, nextTick } from 'vue'
 import { Lock } from '@element-plus/icons-vue'
 import type { Seat, Student } from '@/types'
-import { useDragDrop } from '@/composables'
+import { useDragDrop, isTouchDevice } from '@/composables'
 import { useStudentStore } from '@/stores/student'
 import { useSeatStore } from '@/stores/seat'
 import { useConfigStore } from '@/stores/config'
@@ -91,6 +92,8 @@ const {
 
 const colorDropdownRef = ref()
 const contextMenuStudentId = ref<string | null>(null)
+const isTouching = ref(false)
+const touchTimeout = ref<number | null>(null)
 
 const isDragOver = computed(() => dragOverSeatId.value === props.seat.id)
 
@@ -98,7 +101,9 @@ const cellStyle = computed(() => {
   const style: Record<string, string> = {
     width: `${props.width || 80}px`,
     height: `${props.height || 60}px`,
-    boxSizing: 'border-box'
+    boxSizing: 'border-box',
+    minWidth: `${Math.min(44, props.width || 80)}px`,
+    minHeight: `${Math.min(44, props.height || 60)}px`
   }
   if (props.student?.color && !props.seat.isLocked) {
     style.background = props.student.color
@@ -152,6 +157,22 @@ function handleContextMenu() {
   }
 }
 
+function handleTouchStart() {
+  isTouching.value = true
+  if (touchTimeout.value) {
+    clearTimeout(touchTimeout.value)
+  }
+}
+
+function handleTouchEnd() {
+  if (touchTimeout.value) {
+    clearTimeout(touchTimeout.value)
+  }
+  touchTimeout.value = window.setTimeout(() => {
+    isTouching.value = false
+  }, 150)
+}
+
 function handleColorSelect(color: string) {
   if (contextMenuStudentId.value) {
     studentStore.setStudentColor(contextMenuStudentId.value, color)
@@ -181,6 +202,8 @@ function saveAutoData() {
   overflow: hidden;
   box-sizing: border-box;
   box-shadow: var(--shadow-card);
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
 }
 
 .seat-cell::before {
@@ -260,6 +283,11 @@ function saveAutoData() {
   opacity: 0.5;
   transform: scale(0.95);
   box-shadow: var(--shadow-lg);
+}
+
+.seat-cell.is-touching {
+  transform: scale(0.96);
+  box-shadow: var(--shadow-md);
 }
 
 .lock-icon {
@@ -354,5 +382,64 @@ function saveAutoData() {
   vertical-align: middle;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   border: 2px solid rgba(255, 255, 255, 0.8);
+}
+
+@media (max-width: 767px) {
+  .seat-cell {
+    border-radius: var(--radius-md);
+  }
+
+  .student-name {
+    font-size: 12px;
+  }
+
+  .student-id {
+    font-size: 10px;
+  }
+
+  .empty-seat::before {
+    inset: 6px;
+  }
+
+  .lock-icon {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 575px) {
+  .seat-cell {
+    border-radius: var(--radius-sm);
+    border-width: 1.5px;
+  }
+
+  .student-info {
+    padding: 2px 1px;
+  }
+
+  .student-name {
+    font-size: 11px;
+  }
+
+  .student-id {
+    font-size: 9px;
+    margin-top: 1px;
+  }
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .seat-cell:hover {
+    transform: none;
+    border-color: var(--border-light);
+    box-shadow: var(--shadow-card);
+  }
+
+  .seat-cell:hover::before {
+    opacity: 0;
+  }
+
+  .seat-cell.is-locked:hover {
+    border-color: var(--border-color);
+    box-shadow: var(--shadow-card);
+  }
 }
 </style>

@@ -1,7 +1,7 @@
 <template>
-  <div class="student-card" :class="{ 'has-color': student.color }" :style="cardStyle" draggable="true"
-    tabindex="0"
-    @dragstart="handleDragStart" @dragend="handleDragEnd" @contextmenu.prevent="handleContextMenu">
+  <div class="student-card" :class="{ 'has-color': student.color }" :style="cardStyle" draggable="true" tabindex="0"
+    @dragstart="handleDragStart" @dragend="handleDragEnd" @contextmenu.prevent="handleContextMenu"
+    @touchstart="handleTouchStart" @touchend="handleTouchEnd">
     <div class="card-content">
       <div class="student-name">{{ student.name }}</div>
       <div v-if="student.studentId" class="student-id">{{ student.studentId }}</div>
@@ -69,16 +69,19 @@ const studentColors = STUDENT_COLORS
 const { handleDragStart: dragStart, handleDragEnd: dragEnd } = useDragDrop()
 
 const contextMenuRef = ref()
+const isTouching = ref(false)
 
 const cardStyle = computed(() => {
+  const style: Record<string, string> = {}
   if (props.student.color) {
-    return {
-      background: props.student.color,
-      borderColor: props.student.color,
-      color: '#fff'
-    }
+    style.background = props.student.color
+    style.borderColor = props.student.color
+    style.color = '#fff'
   }
-  return {}
+  if (isTouching.value) {
+    style.transform = 'scale(0.96)'
+  }
+  return style
 })
 
 function handleDragStart(event: DragEvent) {
@@ -99,6 +102,16 @@ function handleContextMenu() {
       dropdown.handleOpen()
     }
   })
+}
+
+function handleTouchStart() {
+  isTouching.value = true
+}
+
+function handleTouchEnd() {
+  setTimeout(() => {
+    isTouching.value = false
+  }, 150)
 }
 
 function handleCommand(command: string) {
@@ -137,6 +150,9 @@ function setColor(color: string) {
   box-shadow: var(--shadow-xs);
   position: relative;
   overflow: hidden;
+  min-height: 44px;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
 }
 
 .student-card::before {
@@ -239,5 +255,52 @@ function setColor(color: string) {
   vertical-align: middle;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
   border: 2px solid rgba(255, 255, 255, 0.8);
+}
+
+@media (max-width: 767px) {
+  .student-card {
+    padding: 8px 10px;
+    min-height: 40px;
+  }
+
+  .student-name {
+    font-size: 12px;
+  }
+
+  .student-id {
+    font-size: 10px;
+  }
+}
+
+@media (max-width: 575px) {
+  .student-card {
+    padding: 6px 8px;
+    min-height: 36px;
+  }
+
+  .student-name {
+    font-size: 11px;
+  }
+
+  .student-id {
+    font-size: 9px;
+    margin-top: 1px;
+  }
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .student-card:hover {
+    transform: none;
+    border-color: var(--border-light);
+    box-shadow: var(--shadow-xs);
+  }
+
+  .student-card:hover::before {
+    opacity: 0;
+  }
+
+  .student-card.has-color:hover {
+    box-shadow: var(--shadow-xs);
+  }
 }
 </style>

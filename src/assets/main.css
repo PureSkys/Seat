@@ -42,6 +42,38 @@
   --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
   --transition-base: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   --transition-slow: 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+
+  --breakpoint-xs: 0;
+  --breakpoint-sm: 576px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 992px;
+  --breakpoint-xl: 1200px;
+  --breakpoint-xxl: 1400px;
+
+  --sidebar-width: 320px;
+  --sidebar-width-tablet: 280px;
+  --toolbar-height: 56px;
+  --mobile-nav-height: 56px;
+  --touch-target-min: 44px;
+
+  --seat-width: 80px;
+  --seat-height: 60px;
+  --seat-width-tablet: 70px;
+  --seat-height-tablet: 52px;
+  --seat-width-mobile: 60px;
+  --seat-height-mobile: 45px;
+
+  --font-size-xs: 11px;
+  --font-size-sm: 12px;
+  --font-size-base: 14px;
+  --font-size-lg: 16px;
+  --font-size-xl: 20px;
+
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 12px;
+  --spacing-lg: 16px;
+  --spacing-xl: 20px;
 }
 
 * {
@@ -172,4 +204,100 @@ body,
 .slide-up-leave-to {
   opacity: 0;
   transform: translateY(10px);
+}
+
+@media (max-width: 991px) {
+  :root {
+    --sidebar-width: var(--sidebar-width-tablet);
+    --seat-width: var(--seat-width-tablet);
+    --seat-height: var(--seat-height-tablet);
+  }
+}
+
+@media (max-width: 767px) {
+  :root {
+    --seat-width: var(--seat-width-mobile);
+    --seat-height: var(--seat-height-mobile);
+    --font-size-base: 13px;
+    --spacing-lg: 12px;
+    --spacing-xl: 16px;
+  }
+
+  html {
+    font-size: 15px;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+  }
+
+  .card-base:hover {
+    transform: none;
+  }
+
+  .student-card:hover {
+    transform: none;
+  }
+
+  .seat-cell:hover {
+    transform: none;
+  }
+}
+
+@media (max-width: 575px) {
+  :root {
+    --radius-sm: 6px;
+    --radius-md: 10px;
+    --radius-lg: 12px;
+    --radius-xl: 16px;
+    --radius-2xl: 20px;
+  }
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .card-base:hover {
+    box-shadow: var(--shadow-card);
+    transform: none;
+  }
+
+  .student-card:hover {
+    box-shadow: var(--shadow-xs);
+    transform: none;
+  }
+
+  .seat-cell:hover {
+    transform: none;
+    border-color: var(--border-light);
+  }
+}
+
+.is-mobile {
+  --sidebar-width: 100%;
+}
+
+.touch-action-pan-x {
+  touch-action: pan-x;
+}
+
+.touch-action-pan-y {
+  touch-action: pan-y;
+}
+
+.touch-action-manipulation {
+  touch-action: manipulation;
+}
+
+.no-select {
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.safe-area-inset-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 0);
+}
+
+.safe-area-inset-top {
+  padding-top: env(safe-area-inset-top, 0);
 }

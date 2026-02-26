@@ -30,7 +30,7 @@
       </el-scrollbar>
     </div>
 
-    <el-dialog v-model="showEditDialog" title="编辑学生信息" width="400px">
+    <el-dialog v-model="showEditDialog" title="编辑学生信息" width="400px" :fullscreen="isMobile">
       <el-form :model="editForm" label-width="60px">
         <el-form-item label="姓名">
           <el-input v-model="editForm.name" />
@@ -68,7 +68,7 @@ import { useStudentStore } from '@/stores/student'
 import { useSeatStore } from '@/stores/seat'
 import { useConfigStore } from '@/stores/config'
 import { useGroupStore } from '@/stores/group'
-import { useDragDrop } from '@/composables'
+import { useDragDrop, useResponsive } from '@/composables'
 import type { Student } from '@/types'
 
 const studentStore = useStudentStore()
@@ -76,6 +76,9 @@ const seatStore = useSeatStore()
 const configStore = useConfigStore()
 const groupStore = useGroupStore()
 const { handleDropToUnseated } = useDragDrop()
+const responsive = useResponsive()
+
+const isMobile = computed(() => responsive.value.isMobile)
 
 function triggerAutoSave() {
   const seatsData = Array.from(seatStore.seats.values())
@@ -234,5 +237,66 @@ function saveEdit() {
 .student-cards :deep(.el-empty__description) {
   color: var(--text-muted);
   font-size: 13px;
+}
+
+@media (max-width: 767px) {
+  .list-header {
+    padding: 12px;
+  }
+
+  .stats {
+    gap: 8px;
+    margin-top: 10px;
+  }
+
+  .stat-item {
+    padding: 6px 10px;
+    font-size: 11px;
+  }
+
+  .list-content {
+    padding: 12px;
+  }
+
+  .student-cards {
+    gap: 8px;
+  }
+}
+
+@media (max-width: 575px) {
+  .student-list {
+    border-radius: var(--radius-lg);
+  }
+
+  .list-header {
+    padding: 10px;
+  }
+
+  .stats {
+    gap: 6px;
+    margin-top: 8px;
+  }
+
+  .stat-item {
+    padding: 5px 8px;
+    font-size: 10px;
+    gap: 4px;
+  }
+
+  .list-content {
+    padding: 10px;
+  }
+
+  .student-cards {
+    gap: 6px;
+  }
+
+  .student-cards :deep(.el-empty) {
+    padding: 16px 0;
+  }
+
+  .student-cards :deep(.el-empty__description) {
+    font-size: 12px;
+  }
 }
 </style>

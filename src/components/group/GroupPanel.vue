@@ -97,7 +97,7 @@
       </TransitionGroup>
     </div>
 
-    <el-dialog v-model="showExportDialog" title="导出分组结果" width="500px">
+    <el-dialog v-model="showExportDialog" title="导出分组结果" width="500px" :fullscreen="isMobile">
       <el-form label-width="100px">
         <el-form-item label="文件名">
           <el-input v-model="exportFilename" placeholder="请输入文件名" />
@@ -122,7 +122,7 @@
       </template>
     </el-dialog>
 
-    <el-dialog v-model="showAutoGroupDialog" title="自动分组" width="400px">
+    <el-dialog v-model="showAutoGroupDialog" title="自动分组" width="400px" :fullscreen="isMobile">
       <el-form label-width="100px">
         <el-form-item label="分组数量">
           <el-input-number v-model="autoGroupCount" :min="2" :max="20" />
@@ -151,11 +151,15 @@ import {
 } from '@element-plus/icons-vue'
 import { useGroupStore } from '@/stores/group'
 import { useStudentStore } from '@/stores/student'
+import { useResponsive } from '@/composables'
 import GroupArea from './GroupArea.vue'
 import { exportGroupsToWord, exportGroupsToExcel } from '@/utils/groupExporter'
 
 const groupStore = useGroupStore()
 const studentStore = useStudentStore()
+const responsive = useResponsive()
+
+const isMobile = computed(() => responsive.value.isMobile)
 
 const showExportDialog = ref(false)
 const showAutoGroupDialog = ref(false)
@@ -357,6 +361,7 @@ async function handleExport() {
   font-size: 18px;
   cursor: pointer;
   transition: all 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .action-btn:hover:not(:disabled) {
@@ -457,6 +462,7 @@ async function handleExport() {
   flex: 1;
   overflow-y: auto;
   padding: 16px;
+  -webkit-overflow-scrolling: touch;
 }
 
 .empty-state {
@@ -496,5 +502,142 @@ async function handleExport() {
 .group-list-leave-to {
   opacity: 0;
   transform: translateY(-20px);
+}
+
+@media (max-width: 767px) {
+  .panel-header {
+    padding: 6px 10px;
+  }
+
+  .header-actions {
+    gap: 2px;
+  }
+
+  .action-btn {
+    width: 32px;
+    height: 32px;
+    font-size: 16px;
+  }
+
+  .action-divider {
+    margin: 0 4px;
+    height: 16px;
+  }
+
+  .panel-stats {
+    gap: 8px;
+    padding: 10px;
+  }
+
+  .stat-card {
+    padding: 10px 6px;
+    gap: 4px;
+  }
+
+  .stat-icon {
+    width: 28px;
+    height: 28px;
+    font-size: 14px;
+  }
+
+  .stat-value {
+    font-size: 16px;
+  }
+
+  .stat-label {
+    font-size: 10px;
+  }
+
+  .panel-content {
+    padding: 12px;
+  }
+
+  .group-list {
+    gap: 10px;
+  }
+}
+
+@media (max-width: 575px) {
+  .panel-header {
+    padding: 4px 8px;
+  }
+
+  .action-btn {
+    width: 28px;
+    height: 28px;
+    font-size: 14px;
+  }
+
+  .panel-stats {
+    gap: 6px;
+    padding: 8px;
+  }
+
+  .stat-card {
+    padding: 8px 4px;
+  }
+
+  .stat-icon {
+    width: 24px;
+    height: 24px;
+    font-size: 12px;
+  }
+
+  .stat-row {
+    gap: 4px;
+  }
+
+  .stat-value {
+    font-size: 14px;
+  }
+
+  .stat-label {
+    font-size: 9px;
+  }
+
+  .panel-content {
+    padding: 10px;
+  }
+
+  .empty-state {
+    padding: 40px 16px;
+  }
+
+  .empty-state p {
+    font-size: 14px;
+  }
+
+  .empty-state .hint {
+    font-size: 12px;
+  }
+
+  .group-list {
+    gap: 8px;
+  }
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .action-btn:hover:not(:disabled) {
+    background: transparent;
+    color: var(--text-secondary);
+  }
+
+  .action-btn.primary:hover {
+    background: var(--primary-color);
+    color: #fff;
+  }
+
+  .action-btn:active:not(:disabled) {
+    background: var(--bg-tertiary);
+  }
+
+  .action-btn.primary:active {
+    background: var(--primary-dark);
+  }
+
+  .action-btn.danger:active:not(:disabled) {
+    background: #fef2f2;
+    color: #dc2626;
+  }
 }
 </style>
