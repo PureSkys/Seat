@@ -112,7 +112,6 @@ export const useGroupStore = defineStore('group', () => {
     const colorIndex = groups.value.length % GROUP_COLORS.length
     const group = createEmptyGroup(name || `分组 ${groupNumber}`, GROUP_COLORS[colorIndex])
     groups.value.push(group)
-    activeGroupId.value = group.id
     saveHistory('create', previousState)
     syncToScheme()
     return group
