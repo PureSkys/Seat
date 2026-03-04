@@ -14,7 +14,8 @@
           <div class="row-label">{{ config.rows - rowIndex }}排</div>
           <template v-for="(seat, colIndex) in row" :key="seat.id">
             <SeatCell :seat="seat" :student="getStudent(seat.studentId)" :show-student-id="showStudentId"
-              :width="cellWidth" :height="cellHeight" @click="handleSeatClick" />
+              :width="cellWidth" :height="cellHeight" @click="handleSeatClick" @edit="handleEdit"
+              @unseat="handleUnseat" />
             <div v-if="colIndex < row.length - 1" class="col-gap" :style="{ width: gapX + 'px' }"></div>
           </template>
         </div>
@@ -58,7 +59,7 @@ import { useStudentStore } from '@/stores/student'
 import { useConfigStore } from '@/stores/config'
 import { useGroupStore } from '@/stores/group'
 import { useResponsive, isTouchDevice } from '@/composables'
-import type { Seat } from '@/types'
+import type { Seat, Student } from '@/types'
 
 const props = withDefaults(
   defineProps<{
@@ -72,6 +73,8 @@ const props = withDefaults(
 const emit = defineEmits<{
   click: [seat: Seat]
   'scale-change': [scale: number]
+  edit: [student: Student]
+  unseat: [seatId: string]
 }>()
 
 const seatStore = useSeatStore()
@@ -142,6 +145,14 @@ function handleSeatClick(seat: Seat) {
     const groupsData = groupStore.exportGroups()
     configStore.saveAutoSaveData(studentStore.students, seatsData, groupsData)
   }
+}
+
+function handleEdit(student: Student) {
+  emit('edit', student)
+}
+
+function handleUnseat(seatId: string) {
+  emit('unseat', seatId)
 }
 
 function zoomIn() {

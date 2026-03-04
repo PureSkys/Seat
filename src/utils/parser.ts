@@ -27,6 +27,10 @@ function normalizeField(field: string): string {
     成绩: 'score',
     score: 'score',
     分数: 'score',
+    备注: 'remark',
+    remark: 'remark',
+    note: 'remark',
+    注: 'remark',
   }
   const normalized = fieldMap[field.trim()]
   return normalized !== undefined ? normalized : field.trim()
@@ -101,6 +105,7 @@ export async function parseExcelFile(file: File): Promise<ParseResult> {
             gender: student.gender as 'male' | 'female' | undefined,
             height: student.height as number | undefined,
             score: student.score as number | undefined,
+            remark: student.remark ? String(student.remark).slice(0, 200) : undefined,
           })
         })
 
@@ -154,6 +159,7 @@ export async function parseCsvFile(file: File): Promise<ParseResult> {
             gender: student.gender as 'male' | 'female' | undefined,
             height: student.height as number | undefined,
             score: student.score as number | undefined,
+            remark: student.remark ? String(student.remark).slice(0, 200) : undefined,
           })
         })
 

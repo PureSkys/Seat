@@ -139,6 +139,12 @@
               <span v-else class="no-data">-</span>
             </template>
           </el-table-column>
+          <el-table-column prop="remark" label="备注" min-width="100">
+            <template #default="{ row }">
+              <span v-if="row.remark">{{ row.remark }}</span>
+              <span v-else class="no-data">-</span>
+            </template>
+          </el-table-column>
           <el-table-column label="操作" width="50" fixed="right">
             <template #default="{ row }">
               <el-button type="danger" size="small" link @click="removeRow(row)">
@@ -185,6 +191,9 @@
         </el-form-item>
         <el-form-item label="成绩">
           <el-input-number v-model="addForm.score" :min="0" :max="1000" placeholder="成绩" />
+        </el-form-item>
+        <el-form-item label="备注">
+          <el-input v-model="addForm.remark" type="textarea" :rows="2" :maxlength="200" show-word-limit placeholder="请输入备注信息（最多200字）" />
         </el-form-item>
       </el-form>
       <template #footer>
@@ -240,7 +249,8 @@ const addForm = reactive<StudentBase>({
   studentId: '',
   gender: undefined,
   height: undefined,
-  score: undefined
+  score: undefined,
+  remark: undefined
 })
 
 const duplicates = computed(() => {
@@ -362,6 +372,7 @@ function confirmImport() {
       gender: s.gender,
       height: s.height,
       score: s.score,
+      remark: s.remark,
     }))
   )
 
@@ -372,14 +383,15 @@ function confirmImport() {
   previewData.value = []
   parseErrors.value = []
   fileName.value = ''
+  isExpanded.value = false
 }
 
 function downloadTemplate() {
   const templateData = [
-    ['姓名', '学号', '性别', '身高', '成绩'],
-    ['张三', '2024001', '男', 175, 85],
-    ['李四', '2024002', '女', 165, 90],
-    ['王五', '2024003', '男', 180, 78],
+    ['姓名', '学号', '性别', '身高', '成绩', '备注'],
+    ['张三', '2024001', '男', 175, 85, '班长'],
+    ['李四', '2024002', '女', 165, 90, ''],
+    ['王五', '2024003', '男', 180, 78, '学习委员'],
   ]
 
   const ws = XLSX.utils.aoa_to_sheet(templateData)
@@ -390,6 +402,7 @@ function downloadTemplate() {
     { wch: 8 },
     { wch: 8 },
     { wch: 8 },
+    { wch: 20 },
   ]
 
   const wb = XLSX.utils.book_new()
@@ -410,6 +423,7 @@ function confirmAddStudent() {
     gender: addForm.gender,
     height: addForm.height,
     score: addForm.score,
+    remark: addForm.remark?.trim() || undefined,
   })
 
   triggerAutoSave()
@@ -421,6 +435,7 @@ function confirmAddStudent() {
   addForm.gender = undefined
   addForm.height = undefined
   addForm.score = undefined
+  addForm.remark = undefined
 
   showAddDialog.value = false
 }

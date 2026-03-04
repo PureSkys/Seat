@@ -281,6 +281,7 @@ export const useGroupStore = defineStore('group', () => {
     activeGroupId.value = null
     history.value = []
     historyIndex.value = -1
+    syncToScheme()
   }
 
   watch(

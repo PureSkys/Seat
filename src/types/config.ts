@@ -16,6 +16,11 @@ export interface ExportConfig {
   backgroundColor: string
 }
 
+export interface UISettings {
+  showTooltipOnHover: boolean
+  showGenderIcon: boolean
+}
+
 export interface SmartArrangeRule {
   type: 'height' | 'score' | 'gender' | 'custom'
   ascending: boolean
@@ -38,4 +43,9 @@ export const DEFAULT_EXPORT_CONFIG: ExportConfig = {
   showSeatNumber: true,
   showStudentId: false,
   backgroundColor: '#ffffff',
+}
+
+export const DEFAULT_UI_SETTINGS: UISettings = {
+  showTooltipOnHover: false,
+  showGenderIcon: true,
 }

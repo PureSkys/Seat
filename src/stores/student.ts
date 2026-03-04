@@ -56,6 +56,7 @@ export const useStudentStore = defineStore('student', () => {
       height: student.height,
       score: student.score,
       color: student.color,
+      remark: student.remark,
     }
     students.value.push(newStudent)
     syncToScheme()
@@ -137,6 +138,7 @@ export const useStudentStore = defineStore('student', () => {
 
   function $reset(): void {
     students.value = []
+    syncToScheme()
   }
 
   watch(

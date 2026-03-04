@@ -1,12 +1,14 @@
 import type { Student } from './student'
 import type { Seat } from './seat'
 import type { StudentGroup } from './group'
-import type { SeatConfig, ExportConfig } from './config'
+import type { SeatConfig, ExportConfig, UISettings } from './config'
+import { DEFAULT_UI_SETTINGS } from './config'
 
 export interface SchemeConfig {
   seat: SeatConfig
   export: ExportConfig
   showPodium: boolean
+  ui: UISettings
 }
 
 export interface DataScheme {
@@ -66,6 +68,7 @@ export function createDefaultSchemeConfig(): SchemeConfig {
       backgroundColor: '#ffffff',
     },
     showPodium: true,
+    ui: { ...DEFAULT_UI_SETTINGS },
   }
 }
 

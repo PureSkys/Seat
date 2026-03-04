@@ -201,6 +201,7 @@ export const useSeatStore = defineStore('seat', () => {
     rows.value = DEFAULT_CONFIG.rows
     cols.value = DEFAULT_CONFIG.cols
     seats.value = new Map()
+    syncToScheme()
   }
 
   watch(

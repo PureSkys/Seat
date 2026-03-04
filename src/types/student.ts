@@ -5,6 +5,7 @@ export interface StudentBase {
   height?: number
   score?: number
   color?: string
+  remark?: string
 }
 
 export interface Student extends StudentBase {

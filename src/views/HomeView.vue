@@ -67,7 +67,8 @@
       </aside>
 
       <section class="seat-area">
-        <SeatGrid ref="seatGridRef" :scale="seatGridScale" @scale-change="handleScaleChange" />
+        <SeatGrid ref="seatGridRef" :scale="seatGridScale" @scale-change="handleScaleChange"
+          @edit="handleEditSeatedStudent" @unseat="handleUnseat" />
       </section>
 
       <aside v-if="responsive.isDesktop" class="sidebar sidebar-right">
@@ -103,6 +104,37 @@
     </el-drawer>
 
     <ExportPanel v-model="showExportDialog" :target-element="seatGridElement" />
+
+    <el-dialog v-model="showEditDialog" title="编辑学生信息" width="400px" :fullscreen="responsive.isMobile">
+      <el-form :model="editForm" label-width="60px">
+        <el-form-item label="姓名">
+          <el-input v-model="editForm.name" />
+        </el-form-item>
+        <el-form-item label="学号">
+          <el-input v-model="editForm.studentId" />
+        </el-form-item>
+        <el-form-item label="性别">
+          <el-select v-model="editForm.gender" clearable>
+            <el-option label="男" value="male" />
+            <el-option label="女" value="female" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="身高">
+          <el-input-number v-model="editForm.height" :min="0" :max="300" />
+        </el-form-item>
+        <el-form-item label="成绩">
+          <el-input-number v-model="editForm.score" :min="0" :max="1000" />
+        </el-form-item>
+        <el-form-item label="备注">
+          <el-input v-model="editForm.remark" type="textarea" :rows="2" :maxlength="200" show-word-limit
+            placeholder="请输入备注信息（最多200字）" />
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <el-button @click="showEditDialog = false">取消</el-button>
+        <el-button type="primary" @click="saveEdit">保存</el-button>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
@@ -123,13 +155,15 @@ import { useStudentStore } from '@/stores/student'
 import { useSeatStore } from '@/stores/seat'
 import { useGroupStore } from '@/stores/group'
 import { useSchemeStore } from '@/stores/scheme'
+import { useConfigStore } from '@/stores/config'
 import { useArrange, useResponsive } from '@/composables'
-import type { SmartArrangeRule } from '@/types'
+import type { SmartArrangeRule, Student } from '@/types'
 
 const studentStore = useStudentStore()
 const seatStore = useSeatStore()
 const groupStore = useGroupStore()
 const schemeStore = useSchemeStore()
+const configStore = useConfigStore()
 const { randomArrange, smartArrange } = useArrange()
 const responsive = useResponsive()
 
@@ -139,6 +173,8 @@ const showLeftDrawer = ref(false)
 const showRightDrawer = ref(false)
 const showMobileSettings = ref(false)
 const seatGridScale = ref(1)
+const showEditDialog = ref(false)
+const editForm = ref<Partial<Student>>({})
 
 const seatGridElement = computed(() => seatGridRef.value?.gridRef || null)
 
@@ -214,6 +250,35 @@ function handleSwitchScheme(id: string) {
 
 function handleScaleChange(scale: number) {
   seatGridScale.value = scale
+}
+
+function handleEditSeatedStudent(student: Student) {
+  editForm.value = { ...student }
+  showEditDialog.value = true
+}
+
+function handleUnseat(seatId: string) {
+  const seat = seatStore.getSeatById(seatId)
+  if (seat?.studentId) {
+    const studentId = seat.studentId
+    seatStore.setStudentToSeat(seatId, undefined)
+    studentStore.setStudentSeated(studentId, undefined)
+    const seatsData = Array.from(seatStore.seats.values())
+    const groupsData = groupStore.exportGroups()
+    configStore.saveAutoSaveData(studentStore.students, seatsData, groupsData)
+    ElMessage.success('已取消排座')
+  }
+}
+
+function saveEdit() {
+  if (editForm.value.id && editForm.value.name) {
+    studentStore.updateStudent(editForm.value.id, editForm.value)
+    const seatsData = Array.from(seatStore.seats.values())
+    const groupsData = groupStore.exportGroups()
+    configStore.saveAutoSaveData(studentStore.students, seatsData, groupsData)
+    showEditDialog.value = false
+    ElMessage.success('保存成功')
+  }
 }
 
 onMounted(() => {

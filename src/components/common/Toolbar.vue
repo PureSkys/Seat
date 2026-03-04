@@ -43,7 +43,7 @@
         <el-icon>
           <Setting />
         </el-icon>
-        <span class="btn-text">座位设置</span>
+        <span class="btn-text">设置</span>
       </el-button>
 
       <el-button type="success" @click="$emit('export')">
@@ -56,8 +56,8 @@
       <SchemeSwitcher @scheme-changed="handleSchemeChanged" />
     </div>
 
-    <el-drawer v-model="showConfigDrawer" title="座位设置" direction="rtl" size="300px">
-      <SeatConfig />
+    <el-drawer v-model="showConfigDrawer" title="设置" direction="rtl" size="320px">
+      <SettingsPanel />
     </el-drawer>
   </div>
 </template>
@@ -73,7 +73,7 @@ import {
   Download,
   ArrowDown,
 } from '@element-plus/icons-vue'
-import SeatConfig from '@/components/seat/SeatConfig.vue'
+import SettingsPanel from '@/components/settings/SettingsPanel.vue'
 import SchemeSwitcher from '@/components/scheme/SchemeSwitcher.vue'
 import { useSchemeStore } from '@/stores/scheme'
 import { useStudentStore } from '@/stores/student'

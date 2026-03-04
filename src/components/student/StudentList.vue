@@ -50,6 +50,9 @@
         <el-form-item label="成绩">
           <el-input-number v-model="editForm.score" :min="0" :max="1000" />
         </el-form-item>
+        <el-form-item label="备注">
+          <el-input v-model="editForm.remark" type="textarea" :rows="2" :maxlength="200" show-word-limit placeholder="请输入备注信息（最多200字）" />
+        </el-form-item>
       </el-form>
       <template #footer>
         <el-button @click="showEditDialog = false">取消</el-button>

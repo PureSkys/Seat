@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { computed } from 'vue'
-import type { SeatConfig, ExportConfig } from '@/types'
-import { DEFAULT_CONFIG, DEFAULT_EXPORT_CONFIG } from '@/types/config'
+import type { SeatConfig, ExportConfig, UISettings } from '@/types'
+import { DEFAULT_CONFIG, DEFAULT_EXPORT_CONFIG, DEFAULT_UI_SETTINGS } from '@/types/config'
 import { useSchemeStore } from './scheme'
 
 export const useConfigStore = defineStore('config', () => {
@@ -34,6 +34,15 @@ export const useConfigStore = defineStore('config', () => {
     },
   })
 
+  const uiSettings = computed<UISettings>({
+    get: () => {
+      return schemeStore.activeScheme?.config?.ui || DEFAULT_UI_SETTINGS
+    },
+    set: (value) => {
+      schemeStore.updateActiveSchemeConfig({ ui: value })
+    },
+  })
+
   const currentSchemeId = computed(() => schemeStore.activeSchemeId)
   const savedSchemes = computed(() => schemeStore.schemes)
 
@@ -46,6 +55,12 @@ export const useConfigStore = defineStore('config', () => {
   function updateExportConfig(config: Partial<ExportConfig>): void {
     schemeStore.updateActiveSchemeConfig({
       export: { ...exportConfig.value, ...config },
+    })
+  }
+
+  function updateUISettings(settings: Partial<UISettings>): void {
+    schemeStore.updateActiveSchemeConfig({
+      ui: { ...uiSettings.value, ...settings },
     })
   }
 
@@ -78,10 +93,12 @@ export const useConfigStore = defineStore('config', () => {
     seatConfig,
     exportConfig,
     showPodium,
+    uiSettings,
     savedSchemes,
     currentSchemeId,
     updateSeatConfig,
     updateExportConfig,
+    updateUISettings,
     isDefaultScheme,
     saveCurrentScheme,
     saveAutoSaveData,
