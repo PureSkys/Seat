@@ -44,10 +44,6 @@ export const useGroupStore = defineStore('group', () => {
     return ids
   })
 
-  const ungroupedCount = computed(() => {
-    return 0
-  })
-
   const totalGroups = computed(() => groups.value.length)
 
   function saveHistory(type: GroupHistoryAction['type'], previousState: StudentGroup[]) {
@@ -297,7 +293,6 @@ export const useGroupStore = defineStore('group', () => {
     activeGroupId,
     activeGroup,
     groupedStudentIds,
-    ungroupedCount,
     totalGroups,
     createGroup,
     deleteGroup,

@@ -3,7 +3,7 @@ import { ref, computed, watch } from 'vue'
 import type { Student, StudentBase } from '@/types'
 import { useSchemeStore } from './scheme'
 
-export interface StudentWithSeat extends Student {
+interface StudentWithSeat extends Student {
   seatId?: string
 }
 
@@ -116,6 +116,16 @@ export const useStudentStore = defineStore('student', () => {
     syncToScheme()
   }
 
+  function clearStudentsSeated(studentIds: string[]): void {
+    studentIds.forEach((id) => {
+      const student = students.value.find((s) => s.id === id)
+      if (student) {
+        ;(student as StudentWithSeat).seatId = undefined
+      }
+    })
+    syncToScheme()
+  }
+
   function setStudentSeated(studentId: string, seatId: string | undefined): void {
     const student = students.value.find((s) => s.id === studentId)
     if (student) {
@@ -162,6 +172,7 @@ export const useStudentStore = defineStore('student', () => {
     removeStudent,
     clearStudents,
     clearAllSeated,
+    clearStudentsSeated,
     setStudentSeated,
     getStudentById,
     importStudents,

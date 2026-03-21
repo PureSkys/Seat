@@ -2,16 +2,16 @@
   <div class="seat-config">
     <el-form label-width="80px" size="small">
       <el-form-item label="行数">
-        <el-input-number v-model="localConfig.rows" :min="1" :max="20" @change="handleConfigChange" />
+        <el-input-number v-model="localConfig.rows" :min="1" :max="20" @change="handleRowsColsChange" />
       </el-form-item>
       <el-form-item label="列数">
-        <el-input-number v-model="localConfig.cols" :min="1" :max="20" @change="handleConfigChange" />
+        <el-input-number v-model="localConfig.cols" :min="1" :max="20" @change="handleRowsColsChange" />
       </el-form-item>
       <el-form-item label="座位宽度">
-        <el-slider v-model="localConfig.seatWidth" :min="60" :max="150" :step="10" @change="handleConfigChange" />
+        <el-slider v-model="localConfig.seatWidth" :min="60" :max="150" :step="10" @change="handleSizeChange" />
       </el-form-item>
       <el-form-item label="座位高度">
-        <el-slider v-model="localConfig.seatHeight" :min="40" :max="120" :step="10" @change="handleConfigChange" />
+        <el-slider v-model="localConfig.seatHeight" :min="40" :max="120" :step="10" @change="handleSizeChange" />
       </el-form-item>
       <el-form-item label="显示讲台">
         <el-switch v-model="showPodium" @change="handlePodiumChange" />
@@ -22,6 +22,7 @@
 
 <script setup lang="ts">
 import { ref, watch } from 'vue'
+import { ElMessage } from 'element-plus'
 import { useSeatStore } from '@/stores/seat'
 import { useStudentStore } from '@/stores/student'
 import { useConfigStore } from '@/stores/config'
@@ -44,11 +45,24 @@ watch(() => configStore.showPodium, (val) => {
   showPodium.value = val
 })
 
-function handleConfigChange() {
-  studentStore.clearAllSeated()
-  seatStore.initSeats(localConfig.value.rows, localConfig.value.cols)
-  configStore.updateSeatConfig(localConfig.value)
+function handleRowsColsChange() {
+  const removedStudentIds = seatStore.resizeSeats(localConfig.value.rows, localConfig.value.cols)
 
+  if (removedStudentIds.length > 0) {
+    studentStore.clearStudentsSeated(removedStudentIds)
+    ElMessage.warning(`${removedStudentIds.length} 名学生因座位减少已退回待排坐区域`)
+  }
+
+  configStore.updateSeatConfig(localConfig.value)
+  saveData()
+}
+
+function handleSizeChange() {
+  configStore.updateSeatConfig(localConfig.value)
+  saveData()
+}
+
+function saveData() {
   const seatsData = Array.from(seatStore.seats.values())
   const groupsData = groupStore.exportGroups()
   if (configStore.isDefaultScheme()) {

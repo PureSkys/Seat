@@ -203,6 +203,11 @@ export function exportToExcel(
   XLSX.writeFile(wb, `${filename}.xlsx`)
 }
 
+const FONT_FAMILY = '微软雅黑'
+const FONT_SIZE_SUBTITLE = 24
+const FONT_SIZE_CONTENT = 26
+const FONT_SIZE_PODIUM = 28
+
 export async function exportToWord(
   students: Student[],
   seats: Map<string, Seat>,
@@ -229,10 +234,12 @@ export async function exportToWord(
               children: [
                 new TextRun({
                   text: cellContent,
-                  size: 22,
+                  size: FONT_SIZE_CONTENT,
+                  font: FONT_FAMILY,
                 }),
               ],
               alignment: AlignmentType.CENTER,
+              spacing: { before: 100, after: 100 },
             }),
           ],
           width: {
@@ -241,10 +248,13 @@ export async function exportToWord(
           },
           verticalAlign: VerticalAlign.CENTER,
           borders: {
-            top: { style: BorderStyle.SINGLE, size: 1, color: '000000' },
-            bottom: { style: BorderStyle.SINGLE, size: 1, color: '000000' },
-            left: { style: BorderStyle.SINGLE, size: 1, color: '000000' },
-            right: { style: BorderStyle.SINGLE, size: 1, color: '000000' },
+            top: { style: BorderStyle.SINGLE, size: 8, color: '333333' },
+            bottom: { style: BorderStyle.SINGLE, size: 8, color: '333333' },
+            left: { style: BorderStyle.SINGLE, size: 8, color: '333333' },
+            right: { style: BorderStyle.SINGLE, size: 8, color: '333333' },
+          },
+          shading: {
+            fill: 'FFFFFF',
           },
         }),
       )
@@ -253,7 +263,7 @@ export async function exportToWord(
       new TableRow({
         children: cells,
         height: {
-          value: convertInchesToTwip(0.5),
+          value: convertInchesToTwip(0.45),
           rule: HeightRule.ATLEAST,
         },
       }),
@@ -267,23 +277,26 @@ export async function exportToWord(
           children: [
             new TextRun({
               text: '讲 台',
-              size: 28,
+              size: FONT_SIZE_PODIUM,
               bold: true,
+              font: FONT_FAMILY,
+              color: 'FFFFFF',
             }),
           ],
           alignment: AlignmentType.CENTER,
+          spacing: { before: 80, after: 80 },
         }),
       ],
       columnSpan: config.cols,
       verticalAlign: VerticalAlign.CENTER,
       shading: {
-        fill: '667EEA',
+        fill: '4A6CF7',
       },
       borders: {
-        top: { style: BorderStyle.SINGLE, size: 1, color: '000000' },
-        bottom: { style: BorderStyle.SINGLE, size: 1, color: '000000' },
-        left: { style: BorderStyle.SINGLE, size: 1, color: '000000' },
-        right: { style: BorderStyle.SINGLE, size: 1, color: '000000' },
+        top: { style: BorderStyle.SINGLE, size: 8, color: '4A6CF7' },
+        bottom: { style: BorderStyle.SINGLE, size: 8, color: '4A6CF7' },
+        left: { style: BorderStyle.SINGLE, size: 8, color: '4A6CF7' },
+        right: { style: BorderStyle.SINGLE, size: 8, color: '4A6CF7' },
       },
     })
 
@@ -315,14 +328,28 @@ export async function exportToWord(
               orientation: PageOrientation.LANDSCAPE,
             },
             margin: {
-              top: convertInchesToTwip(0.5),
-              right: convertInchesToTwip(0.5),
-              bottom: convertInchesToTwip(0.5),
-              left: convertInchesToTwip(0.5),
+              top: convertInchesToTwip(0.75),
+              right: convertInchesToTwip(0.75),
+              bottom: convertInchesToTwip(0.75),
+              left: convertInchesToTwip(0.75),
             },
           },
         },
-        children: [table],
+        children: [
+          table,
+          new Paragraph({
+            children: [
+              new TextRun({
+                text: `共 ${config.rows} 排 × ${config.cols} 列`,
+                size: FONT_SIZE_SUBTITLE,
+                font: FONT_FAMILY,
+                color: '888888',
+              }),
+            ],
+            alignment: AlignmentType.CENTER,
+            spacing: { before: 200 },
+          }),
+        ],
       },
     ],
   })

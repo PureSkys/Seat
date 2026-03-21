@@ -119,6 +119,42 @@ export const useSeatStore = defineStore('seat', () => {
     syncToScheme()
   }
 
+  function resizeSeats(newRows: number, newCols: number): string[] {
+    const removedStudentIds: string[] = []
+
+    for (const seat of seats.value.values()) {
+      if (seat.studentId && (seat.row >= newRows || seat.col >= newCols)) {
+        removedStudentIds.push(seat.studentId)
+      }
+    }
+
+    const newSeats = new Map<string, Seat>()
+    for (let row = 0; row < newRows; row++) {
+      for (let col = 0; col < newCols; col++) {
+        const id = createSeatId(row, col)
+        const existingSeat = seats.value.get(id)
+        if (existingSeat) {
+          newSeats.set(id, { ...existingSeat })
+        } else {
+          newSeats.set(id, {
+            id,
+            row,
+            col,
+            isLocked: false,
+            studentId: undefined,
+          })
+        }
+      }
+    }
+
+    rows.value = newRows
+    cols.value = newCols
+    seats.value = newSeats
+    syncToScheme()
+
+    return removedStudentIds
+  }
+
   function getSeat(row: number, col: number): Seat | undefined {
     return seats.value.get(createSeatId(row, col))
   }
@@ -222,6 +258,7 @@ export const useSeatStore = defineStore('seat', () => {
     totalSeats,
     occupiedCount,
     initSeats,
+    resizeSeats,
     getSeat,
     getSeatById,
     setStudentToSeat,

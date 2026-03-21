@@ -3,8 +3,8 @@
     <el-form :model="exportOptions" label-width="100px">
       <el-form-item label="导出格式">
         <el-radio-group v-model="exportOptions.format">
-          <el-radio-button value="excel">Excel 表格</el-radio-button>
           <el-radio-button value="word">Word 文档</el-radio-button>
+          <el-radio-button value="excel">Excel 表格</el-radio-button>
         </el-radio-group>
       </el-form-item>
 
@@ -56,7 +56,7 @@ const visible = computed({
 const exporting = ref(false)
 
 const exportOptions = ref<ExportOptions>({
-  format: 'excel',
+  format: 'word',
   quality: 1,
   backgroundColor: '#ffffff',
   filename: 'seat-table',

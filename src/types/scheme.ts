@@ -24,12 +24,6 @@ export interface DataScheme {
   groups: StudentGroup[]
 }
 
-export interface SchemeManagerState {
-  schemes: DataScheme[]
-  activeSchemeId: string | null
-  version: number
-}
-
 export interface SchemeOperationResult {
   success: boolean
   message: string
